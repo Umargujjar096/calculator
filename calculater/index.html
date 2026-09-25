@@ -1,0 +1,144 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator App</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="calculator">
+
+    <input
+      type="text"
+      id="display"
+      class="display"
+      value="0"
+      readonly
+    >
+
+    <div class="buttons">
+
+      <button class="clear" onclick="clearDisplay()">AC</button>
+      <button onclick="deleteNumber()">DEL</button>
+      <button onclick="percentage()">%</button>
+      <button class="operator" onclick="addOperator('/')">÷</button>
+
+      <button onclick="addNumber('7')">7</button>
+      <button onclick="addNumber('8')">8</button>
+      <button onclick="addNumber('9')">9</button>
+      <button class="operator" onclick="addOperator('*')">×</button>
+
+      <button onclick="addNumber('4')">4</button>
+      <button onclick="addNumber('5')">5</button>
+      <button onclick="addNumber('6')">6</button>
+      <button class="operator" onclick="addOperator('-')">−</button>
+
+      <button onclick="addNumber('1')">1</button>
+      <button onclick="addNumber('2')">2</button>
+      <button onclick="addNumber('3')">3</button>
+      <button class="operator" onclick="addOperator('+')">+</button>
+
+      <button class="zero" onclick="addNumber('0')">0</button>
+      <button onclick="addNumber('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+
+    function addNumber(number) {
+      if (display.value === "0" && number !== ".") {
+        display.value = number;
+      } else {
+        display.value += number;
+      }
+    }
+
+    function addOperator(operator) {
+      const lastCharacter =
+        display.value.charAt(display.value.length - 1);
+
+      if ("+-*/".includes(lastCharacter)) {
+        display.value =
+          display.value.slice(0, -1) + operator;
+      } else {
+        display.value += operator;
+      }
+    }
+
+    function clearDisplay() {
+      display.value = "0";
+    }
+
+    function deleteNumber() {
+      if (display.value.length === 1) {
+        display.value = "0";
+      } else {
+        display.value = display.value.slice(0, -1);
+      }
+    }
+
+    function percentage() {
+      try {
+        display.value =
+          parseFloat(display.value) / 100;
+      } catch {
+        display.value = "Error";
+      }
+    }
+
+    function calculate() {
+      try {
+        const result = Function(
+          '"use strict"; return (' +
+          display.value +
+          ')'
+        )();
+
+        display.value = result;
+      } catch {
+        display.value = "Error";
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener("keydown", function(event) {
+
+      if (
+        (event.key >= "0" && event.key <= "9") ||
+        event.key === "."
+      ) {
+        addNumber(event.key);
+      }
+
+      if ("+-*/".includes(event.key)) {
+        addOperator(event.key);
+      }
+
+      if (event.key === "Enter" || event.key === "=") {
+        calculate();
+      }
+
+      if (event.key === "Escape") {
+        clearDisplay();
+      }
+
+      if (event.key === "Backspace") {
+        deleteNumber();
+      }
+
+      if (event.key === "%") {
+        percentage();
+      }
+    });
+  </script>
+
+</body>
+</html>
